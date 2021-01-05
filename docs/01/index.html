@@ -1,0 +1,157 @@
+<html>
+    <head>
+        <title>Genuary 01 - Triple Nested Loop</title>
+        <meta charset="utf-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link href="prism.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="container pt-5">
+            <h1 class="text-center display-1">Genuary 01 - Triple Nested Loop</h1>
+
+            <p class="text-center m-3"> Loop through color values. </p>
+
+            <p class="lead mt-5 text-center">Pseudo-Code</p>
+            <div class="p-5 shadow text-white bg-dark rounded" style="width: min-content; margin-left: auto; margin-right: auto;">
+            <pre style="width: min-content;"><p class="font-monospace" style="width: min-content;">
+<b>For</b> h &larr; 0 <b>to</b> X
+    <b>For</b> s &larr; 0 <b>to</b> X
+        <b>For</b> b &larr; 0 <b>to</b> X
+            x,y,&alpha; &larr; <i>fx</i>(h,s,b);
+            <i>draw</i>((x,y), (h,s,b,&alpha;));
+        <b>end</b>
+    <b>end</b>
+<b>end</b></p></pre>
+        </div>
+
+        <p class="lead mt-5 text-center">Renders</p>
+        <div class="d-flex justify-content-around flex-wrap">
+            <img class="m-1" src="img/01.png" width="300">
+            <img class="m-1" src="img/02.png" width="300">
+            <img class="m-1" src="img/03.png" width="300">
+            <img class="m-1" src="img/04.png" width="300">
+            <img class="m-1" src="img/05.png" width="300">
+            <img class="m-1" src="img/06.png" width="300">
+            <img class="m-1" src="img/07.png" width="300">
+            <img class="m-1" src="img/08.png" width="300">
+            <img class="m-1" src="img/09.png" width="300">
+            <img class="m-1" src="img/10.png" width="300">
+            <img class="m-1" src="img/11.png" width="300">
+            <img class="m-1" src="img/12.png" width="300">
+            <img class="m-1" src="img/13.png" width="300">
+            <img class="m-1" src="img/14.png" width="300">
+            <img class="m-1" src="img/15.png" width="300">
+            <img class="m-1" src="img/16.png" width="300">
+        </div>
+
+        <p class="lead mt-5 text-center">Code (Processing.py 3.5.4)</p>
+        <pre class="rounded bg-dark"><code class="language-python">
+# TRIPLE NESTED LOOP
+
+from math import pi
+
+# PARAMETERS
+RES = 100
+STEP = 2000
+ITER = 10
+CHAOS = 1
+# /PARAMETERS
+
+COUNT = 0
+FX = None
+
+def reset():
+    global COUNT, FX
+    background(0)
+    FX = rft()
+    COUNT = 0
+
+def setup():
+    size(800, 800)
+    colorMode(HSB, RES)
+    reset()
+    
+def draw():
+    global COUNT
+    
+    for _ in range(STEP):
+        if COUNT > RES**3:
+            return
+        
+        h = COUNT % RES
+        s = (COUNT // RES) % RES
+        b = (COUNT // (RES*RES))  % RES
+        
+        radius = max(sqrt(width * height / ((RES**3) * pi)), 1.0)
+        
+        x,y,a = FX(h / float(RES), s / float(RES), b / float(RES))
+        x = (x % 1) * width
+        y = (y % 1) * height
+        a = (a % 1) * 255
+        
+        noStroke()
+        fill(h,s,b,a)
+        
+        circle(x,y, 2*radius)
+        COUNT += 1
+    print(h,s,b)
+    
+    
+def pos(h,s,b):
+    return (h, s, b)
+
+def cyl(h,s,b):
+    rho = sqrt(h*h + s*s)
+    phi = atan2(s, h)
+    
+    return (rho, phi, b)
+
+def sph(h,s,b):
+    rho = sqrt(h*h + s*s + b*b)
+    if rho == 0: return (0,0,0)
+    theta = acos(b / rho)
+    phi = atan2(s,h)
+    return (rho, theta, phi)
+
+def rft():
+    xv = [[random(-CHAOS, CHAOS) for _ in range(9)] for _ in range(ITER)]
+    yv = [[random(-CHAOS, CHAOS) for _ in range(9)] for _ in range(ITER)]
+    zv = [[random(-CHAOS, CHAOS) for _ in range(9)] for _ in range(ITER)]
+    
+    def fx(h,s,b):
+        x = 0
+        y = 0
+        z = 0
+        for hf, ha, hp, sf, sa, sp, ba, bf, bp in xv:
+            x += ha * sin(h * 2 * pi * hf + hp) / ITER
+            x += sa * sin(s * 2 * pi * sf + sp) / ITER
+            x += ba * sin(b * 2 * pi * bf + bp) / ITER
+        
+        for hf, ha, hp, sf, sa, sp, ba, bf, bp in yv:
+            y += ha * sin(h * 2 * pi * hf + hp) / ITER
+            y += sa * sin(s * 2 * pi * sf + sp) / ITER
+            y += ba * sin(b * 2 * pi * bf + bp) / ITER
+            
+        for hf, ha, hp, sf, sa, sp, ba, bf, bp in zv:
+            z += ha * sin(h * 2 * pi * hf + hp) / ITER
+            z += sa * sin(s * 2 * pi * sf + sp) / ITER
+            z += ba * sin(b * 2 * pi * bf + bp) / ITER
+        
+        return (x + 0.5, y + 0.5, z + 0.5)
+    
+    return fx
+
+def keyPressed():
+    if key == " ":
+        reset()
+    if key == "s":
+        save("frame.png")
+        </code></pre>
+
+        <p class="text-center text-decoration-underline">by Kyntaz</p>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        <script src="prism.js"></script>
+    </body>
+</html>

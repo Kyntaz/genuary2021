@@ -1,0 +1,35 @@
+01, 02, 03
+RES = 255
+STEP = 2000
+ITER = 3
+CHAOS = 1
+
+04
+RES = 50
+STEP = 2000
+ITER = 100
+CHAOS = 1
+
+05, 06, 07, 08
+RES = 100
+STEP = 2000
+ITER = 10
+CHAOS = 1.2
+
+09, 10
+RES = 100
+STEP = 2000
+ITER = 10
+CHAOS = 2
+
+11, 12, 13, 14
+RES = 100
+STEP = 2000
+ITER = 10
+CHAOS = 0.7
+
+15
+cyl
+
+16
+sph
