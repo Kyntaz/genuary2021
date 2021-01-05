@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <title>Genuary 02 - Rule 30</title>
+        <meta charset="utf-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link href="prism.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="container pt-5">
+            <h1 class="text-center display-1">Genuary 02 - Rule 30</h1>
+
+            <p class="text-center m-3"> Rule 30 pyramids. </p>
+
+            <p class="lead mt-5 text-center">Pseudo-Code</p>
+            <div class="px-5 shadow text-white bg-dark rounded" style="width: min-content; margin-left: auto; margin-right: auto;">
+<pre style="width: min-content;"><p class="font-monospace" style="width: min-content;">
+field[r,c] &larr; (field[r-1,c-1] <b>xor</b> (field[r-1,c] <b>or</b> field[r-1,c+1])) <b>or</b> field[r,c]
+</p></pre>
+            </div>
+
+            <p class="lead mt-5 text-center">Renders</p>
+            <div class="d-flex justify-content-around flex-wrap">
+            <img class="m-1" src="frame.png" width="800">
+            </div>
+
+            <p class="lead mt-5 text-center">Code (Processing.py 3.5.4)</p>
+<pre class="rounded bg-dark"><code class="language-python"># RULE 30
+
+# PARAMETERS
+GRAIN = 3
+EXT = 3
+TRANS = 0.1
+R = 0.0002
+# /PARAMETERS
+
+FIELD = None
+
+def reset():
+    global FIELD
+    FIELD = [[random(1) < R for _ in range(ceil(width / GRAIN) + 1)] for _ in range(ceil(height / GRAIN) + 1)]
+
+def setup():
+    size(800, 800, P2D)
+    noStroke()
+    fill(255, 255, 255, TRANS  * 255)
+    frameRate(12)
+    
+    reset()
+    
+def draw():
+    global FIELD
+    
+    background(0)
+    
+    field_ = [[v for v in l] for l in FIELD]
+    for row, l in enumerate(FIELD[:-1]):
+        for col, val in enumerate(l):
+            row_ = (row + 1) % len(FIELD)
+            col_ = (col + 1) % len(l)
+            _row = row - 1 if row > 0 else len(FIELD) - 1
+            _col = col - 1 if col > 0 else len(l) - 1
+            field_[row_][col] = (FIELD[row][_col] != (FIELD[row][col] or FIELD[row][col_])) or FIELD[row_][col]
+            if field_[row][col]:
+                circle(col * GRAIN, row * GRAIN, GRAIN * EXT)
+    
+    FIELD = field_
+
+def keyPressed():
+    if key == " ":
+        reset()
+    if key == "s":
+        save("frame.png")
+</code></pre>
+
+        <p class="text-center text-decoration-underline">by Kyntaz</p>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        <script src="prism.js"></script>
+    </body>
+</html>
